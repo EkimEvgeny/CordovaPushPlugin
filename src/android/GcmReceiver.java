@@ -51,15 +51,22 @@ public class GcmReceiver extends GcmOrtcBroadcastReceiver {
 
     private void showPopup(Context context)
     {
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate( R.layout.dialog_view, null );
+		Handler mHandler = new Handler(Looper.getMainLooper()) {
+            @Override
+            public void handleMessage(Message message) {
+				LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+				View view = inflater.inflate( R.layout.dialog_view, null );
 
-        AlertDialog alertDialog = new AlertDialog.Builder(context)
-                .setView(view)
-                .create();
+				AlertDialog alertDialog = new AlertDialog.Builder(context)
+						.setView(view)
+						.create();
 
-        alertDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
-        alertDialog.show();
+				alertDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+				alertDialog.show();
+			}
+		};
+		
+		mHandler.sendEmptyMessage(1);
     }
 
     public void createNotification(Context context, Bundle extras)
