@@ -13,7 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 
-import com.pushexample.R;
+import co.realtime.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
