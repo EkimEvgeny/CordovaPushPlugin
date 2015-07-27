@@ -7,11 +7,16 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.fy.popuptest.R;
 
@@ -38,28 +43,49 @@ public class GcmReceiver extends GcmOrtcBroadcastReceiver {
             if (OrtcPushPlugin.isInForeground()) {
                 extras.putBoolean("foreground", true);
                 OrtcPushPlugin.sendExtras(extras);
+                if (extras.getString("M") != null && extras.getString("M").length() != 0)
+                    showPopup(context, extras.getString("M").substring(13));
             } else {
                 extras.putBoolean("foreground", false);
+
                 // Send a notification if there is a message
                 if (extras.getString("M") != null && extras.getString("M").length() != 0) {
                     createNotification(context, extras);
-                    showPopup(context);
+                    showPopup(context, extras.getString("M").substring(13));
                 }
             }
         }
     }
 
-    private void showPopup(Context context)
+    private void showPopup(final Context contextArg, final String messageArg)
     {
-		Handler mHandler = new Handler(Looper.getMainLooper()) {
+        Handler mHandler = new Handler(Looper.getMainLooper()) {
             @Override
             public void handleMessage(Message message) {
-				LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+				LayoutInflater inflater = (LayoutInflater) contextArg.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 				View view = inflater.inflate( R.layout.dialog_view, null );
+                TextView messageTextView = (TextView)view.findViewById(R.id.messageTextView);
+                messageTextView.setText(messageArg);
 
-				AlertDialog alertDialog = new AlertDialog.Builder(context)
+				final AlertDialog alertDialog = new AlertDialog.Builder(contextArg)
 						.setView(view)
 						.create();
+
+                Button okButton = (Button)view.findViewById(R.id.okButton);
+                okButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        alertDialog.cancel();
+                    }
+                });
+
+                Button cancelButton = (Button)view.findViewById(R.id.cancelButton);
+                cancelButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        alertDialog.cancel();
+                    }
+                });
 
 				alertDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
 				alertDialog.show();

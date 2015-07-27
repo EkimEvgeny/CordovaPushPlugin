@@ -2,8 +2,24 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ff7711">
+    android:background="#563471">
+    <RelativeLayout
+        android:layout_gravity="center"
+        android:background="@drawable/border"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content" >
+        <TextView
+            android:text="Binary signals"
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
     <TextView
+        android:id="@+id/messageTextView"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:text="Dialog is done"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
@@ -11,16 +27,27 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
         android:orientation="horizontal">
         <Button
+            android:id="@+id/okButton"
+            android:textColor="#000"
+            android:background="#d4d2d5"
             android:text="Ok"
             android:layout_weight="0.5"
             android:layout_width="0dp"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="5dp"/>
         <Button
+            android:id="@+id/cancelButton"
+            android:textColor="#000"
+            android:background="#d4d2d5"
             android:text="Cancel"
             android:layout_weight="0.5"
             android:layout_width="0dp"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="20dp"/>
     </LinearLayout>
 </LinearLayout>
