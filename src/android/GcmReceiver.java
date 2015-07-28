@@ -18,6 +18,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.fy.popuptest.MainActivity;
 import com.fy.popuptest.R;
 
 import org.json.JSONException;
@@ -43,8 +44,8 @@ public class GcmReceiver extends GcmOrtcBroadcastReceiver {
             if (OrtcPushPlugin.isInForeground()) {
                 extras.putBoolean("foreground", true);
                 OrtcPushPlugin.sendExtras(extras);
-                if (extras.getString("M") != null && extras.getString("M").length() != 0)
-                    showPopup(context, extras.getString("M").substring(13));
+                //if (extras.getString("M") != null && extras.getString("M").length() != 0)
+                    //showPopup(context, extras.getString("M").substring(13));
             } else {
                 extras.putBoolean("foreground", false);
 
@@ -76,6 +77,9 @@ public class GcmReceiver extends GcmOrtcBroadcastReceiver {
                     @Override
                     public void onClick(View v) {
                         alertDialog.cancel();
+                        Intent mainActivityIntent = new Intent(contextArg, MainActivity.class);
+                        mainActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        contextArg.startActivity(mainActivityIntent);
                     }
                 });
 
