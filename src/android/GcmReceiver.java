@@ -63,10 +63,35 @@ public class GcmReceiver extends GcmOrtcBroadcastReceiver {
         Handler mHandler = new Handler(Looper.getMainLooper()) {
             @Override
             public void handleMessage(Message message) {
-				LayoutInflater inflater = (LayoutInflater) contextArg.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                String messageStr = messageArg;
+                String messageOutput = "";
+                boolean isJSON = true;
+                JSONObject jObject = null;
+
+                try {
+                    jObject = new JSONObject(messageStr);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    isJSON = false;
+                }
+
+                if(isJSON)
+                {
+                    try {
+                        messageOutput = jObject.getString("message");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                else
+                {
+                    messageOutput = messageStr;
+                }
+
+                LayoutInflater inflater = (LayoutInflater) contextArg.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 				View view = inflater.inflate( R.layout.dialog_view, null );
                 TextView messageTextView = (TextView)view.findViewById(R.id.messageTextView);
-                messageTextView.setText(messageArg);
+                messageTextView.setText(messageOutput);
 
 				final AlertDialog alertDialog = new AlertDialog.Builder(contextArg)
 						.setView(view)
