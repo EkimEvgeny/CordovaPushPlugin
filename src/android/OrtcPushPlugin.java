@@ -1,6 +1,7 @@
 package co.realtime.plugins.android.cordovapush;
 
 import android.app.NotificationManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -12,7 +13,17 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.sql.Time;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
+import java.util.Locale;
 
 import ibt.ortc.api.Ortc;
 import ibt.ortc.extensibility.OnConnected;
@@ -38,6 +49,7 @@ public class OrtcPushPlugin extends CordovaPlugin {
     public static final String ACTION_UNSUBSCRIBE = "unsubscribe";
     public static final String ACTION_CANCEL_NOTIFICATIONS = "cancelAllLocalNotifications";
     public static final String ACTION_SEND_MESSAGE = "send";
+    public static final String ACTION_SET_DIALOG_TIME_RANGE = "setDialogTimeRange";
     private OrtcClient client;
     private CallbackContext callback = null;
     private static CordovaWebView gWebView;
@@ -213,12 +225,32 @@ public class OrtcPushPlugin extends CordovaPlugin {
                 callbackContext.success();
                 return true;
             }
+            else if(ACTION_SET_DIALOG_TIME_RANGE.equals(action)){
+                setAlertDialogTimeRange(webView.getContext(), args.getString(0), args.getString(1));
+                callbackContext.success();
+                return true;
+            }
             callbackContext.error("Invalid action");
             return false;
         } catch(Exception e) {
             System.err.println("Exception: " + e.getMessage());
             callbackContext.error(e.getMessage());
             return false;
+        }
+    }
+
+    private void setAlertDialogTimeRange(Context context, String timeFrom, String timeTo)
+    {
+        SimpleDateFormat inputParser = new SimpleDateFormat("HH:mm", Locale.US);
+        try {
+            OutputStream outputStream = context.openFileOutput("config.txt", Context.MODE_PRIVATE);
+            outputStream.write((timeFrom + "\r\n").getBytes());
+            outputStream.write((timeTo + "\r\n").getBytes());
+            outputStream.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

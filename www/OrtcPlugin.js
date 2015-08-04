@@ -1,4 +1,4 @@
-(function(cordova) {
+cordova.define("co.realtime.plugins.CordovaPush.OrtcPushPlugin", function(require, exports, module) { (function(cordova) {
  
  function OrtcPushPlugin() {}
  
@@ -38,6 +38,10 @@
  cordova.exec(callback, callback, "OrtcPushPlugin", "cancelAllLocalNotifications", []);
  };
  
+ OrtcPushPlugin.prototype.setDialogTimeRange= function(timeFrom, timeTo) {
+ cordova.exec(null, null, "OrtcPushPlugin", "setDialogTimeRange", [timeFrom, timeTo]);
+ };
+
  OrtcPushPlugin.prototype.log = function(log) {
  cordova.exec(null, null, "OrtcPushPlugin", "log", log ? [log] : []);
  };
@@ -75,3 +79,5 @@
                            OrtcPushPlugin.checkForNotifications();
                            }
                            });
+
+});

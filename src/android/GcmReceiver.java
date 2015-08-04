@@ -24,7 +24,20 @@ import com.fy.popuptest.R;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.sql.Time;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Random;
+import java.util.TimeZone;
 
 import ibt.ortc.extensibility.GcmOrtcBroadcastReceiver;
 
@@ -52,7 +65,8 @@ public class GcmReceiver extends GcmOrtcBroadcastReceiver {
                 // Send a notification if there is a message
                 if (extras.getString("M") != null && extras.getString("M").length() != 0) {
                     createNotification(context, extras);
-                    showPopup(context, extras.getString("M").substring(13));
+                    if(canDialogBeShownNow(context))
+                        showPopup(context, extras.getString("M").substring(13));
                 }
             }
         }
@@ -122,6 +136,43 @@ public class GcmReceiver extends GcmOrtcBroadcastReceiver {
 		};
 		
 		mHandler.sendEmptyMessage(1);
+    }
+
+    private boolean canDialogBeShownNow(Context context)
+    {
+        SimpleDateFormat inputParser = new SimpleDateFormat("HH:mm", Locale.US);
+        try {
+            InputStream inputStream = context.openFileInput("config.txt");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+            String timeFromString = reader.readLine();
+
+            if(timeFromString == null || timeFromString.length() == 0)
+                return true;
+
+            String timeToString = reader.readLine();
+
+            if(timeToString == null || timeToString.length() == 0)
+                return true;
+
+            Date timeFrom = inputParser.parse(timeFromString);
+            Date timeTo = inputParser.parse(timeToString);
+
+            Calendar now = Calendar.getInstance();
+            int hours = now.get(Calendar.HOUR_OF_DAY);
+            int minutes = now.get(Calendar.MINUTE);
+
+            Date nowDate = inputParser.parse(hours + ":" + minutes);
+            if(nowDate.after(timeFrom) && nowDate.before(timeTo))
+                return false;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return true;
     }
 
     public void createNotification(Context context, Bundle extras)
